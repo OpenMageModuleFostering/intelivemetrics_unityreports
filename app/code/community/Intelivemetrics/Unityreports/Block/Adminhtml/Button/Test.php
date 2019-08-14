@@ -20,13 +20,14 @@ class Intelivemetrics_Unityreports_Block_Adminhtml_Button_Test extends Mage_Admi
         $buttonBlock = $this->getElement()->getForm()->getParent()->getLayout()->createBlock('adminhtml/widget_button');
 
         $_websiteCode = $buttonBlock->getRequest()->getParam('website');
+        
         $params = array(
             'website' => $_websiteCode,
             // We add _store for the base url function, otherwise it will not correctly add the store code if configured
-            '_store' => $_websiteCode ? $_websiteCode : Mage::app()->getDefaultStoreView()->getId()
+            '_store' => $_websiteCode ? $_websiteCode : Mage::app()->getStore()->getId()
         );
 
-        $url = Mage::helper('adminhtml')->getUrl("unityreports", $params);
+        $url = Mage::helper('adminhtml')->getUrl("*/index/index", $params);
 
         return $this->getLayout()
                         ->createBlock('adminhtml/widget_button')

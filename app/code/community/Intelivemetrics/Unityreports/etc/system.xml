@@ -73,7 +73,7 @@
                             <comment>Address pointing to remote web service</comment>
                         </ws_endpoint>
                         <test translate="label comment">
-                            <comment>This test will validate your setup.</comment>
+                            <comment>Remember to save configuration before testing!</comment>
                             <frontend_type>select</frontend_type>
                             <frontend_model>Intelivemetrics_Unityreports_Block_Adminhtml_Button_Test</frontend_model>
                             <sort_order>20</sort_order>

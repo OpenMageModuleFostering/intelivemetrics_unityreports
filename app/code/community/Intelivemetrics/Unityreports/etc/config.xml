@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Intelivemetrics_Unityreports>
-            <version>0.8.1</version>
+            <version>0.8.2</version>
         </Intelivemetrics_Unityreports>
     </modules>
     <global>
@@ -113,7 +113,17 @@
             </checkout_cart_product_add_after>
         </events>
     </global>
-    
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <unityreports before="Mage_Adminhtml">Intelivemetrics_Unityreports</unityreports>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
     <adminhtml>
         <events>
             <sales_order_save_after>
@@ -147,7 +157,7 @@
             </unityreports_stat>
             <unityreports_stock>
                 <schedule>
-                    <cron_expr>0 2 * * *</cron_expr>
+                    <cron_expr>15 2 * * *</cron_expr>
                 </schedule>
                 <run>
                     <model>unityreports/cron_stock::runSync</model>
