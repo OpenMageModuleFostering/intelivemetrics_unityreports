@@ -11,7 +11,6 @@
 class Intelivemetrics_Unityreports_IndexController extends Mage_Adminhtml_Controller_Action {
 
     public function indexAction() {
-
         $msg = "Running UnityReports Self Test";
         $success = true;
         $helper = Mage::helper('unityreports');

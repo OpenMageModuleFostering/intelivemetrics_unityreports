@@ -27,7 +27,7 @@ class Intelivemetrics_Unityreports_Block_Adminhtml_Button_Test extends Mage_Admi
             '_store' => $_websiteCode ? $_websiteCode : Mage::app()->getStore()->getId()
         );
 
-        $url = Mage::helper('adminhtml')->getUrl("*/index/index", $params);
+        $url = Mage::helper('adminhtml')->getUrl("unityreports/index/index", $params);
 
         return $this->getLayout()
                         ->createBlock('adminhtml/widget_button')

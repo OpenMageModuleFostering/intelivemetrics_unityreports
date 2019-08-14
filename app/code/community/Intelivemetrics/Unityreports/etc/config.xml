@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Intelivemetrics_Unityreports>
-            <version>0.8.2</version>
+            <version>0.8.3</version>
         </Intelivemetrics_Unityreports>
     </modules>
     <global>
@@ -115,13 +115,13 @@
     </global>
     <admin>
         <routers>
-            <adminhtml>
+            <unityreports>
+                <use>admin</use>
                 <args>
-                    <modules>
-                        <unityreports before="Mage_Adminhtml">Intelivemetrics_Unityreports</unityreports>
-                    </modules>
+                    <module>Intelivemetrics_Unityreports</module>
+                    <frontName>unityreports</frontName>
                 </args>
-            </adminhtml>
+            </unityreports>
         </routers>
     </admin>
     <adminhtml>
