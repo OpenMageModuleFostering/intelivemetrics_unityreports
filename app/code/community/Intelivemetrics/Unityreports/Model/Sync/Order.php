@@ -103,8 +103,9 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
             $order_count = 0;
             $category = Mage::getModel('catalog/category');
             foreach ($collection as $order) {
+                $attributes = $order->getData();
+                
                 try {
-                    $attributes = $order->getData();
                     $currency = $attributes['order_currency_code'];
 
                     $order_fields = array(
@@ -132,7 +133,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
                         'medium' => $attributes['medium'],
                         'content' => $attributes['content'],
                         'campaign' => $attributes['campaign'],
-                        'payment_method' => $order->getPayment()->getMethodInstance()->getTitle()
+                        'payment_method' => $order->getPayment()->getMethod()
                     );
 
                     // indirizzo di spedizione
@@ -182,7 +183,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
 
                         //recupera path categorie, solo della prima categoria associata
                         //TODO: what if no category info is available? put some fake cateogry like UNKNOWN
-                        if ($product = $item->getProduct()) {
+                        if ( ($product = $item->getProduct()) || ($product=Mage::getModel('catalog/product')->load($item->getProductId())) ) {
                             $mainCategory = $product->getCategoryCollection()->getFirstItem();
                             $ids = array_reverse($mainCategory->getPathIds());
                             $counter = 1;

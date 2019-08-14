@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Intelivemetrics_Unityreports>
-            <version>0.7.3</version>
+            <version>0.7.4</version>
         </Intelivemetrics_Unityreports>
     </modules>
     <global>
@@ -134,7 +134,7 @@
                     <cron_expr>*/5 * * * *</cron_expr>
                 </schedule>
                 <run>
-                    <model>unityreports/cron_sync::sync</model>
+                    <model>unityreports/cron_sync::runSync</model>
                 </run>
             </unityreports_sync>
             <unityreports_count>

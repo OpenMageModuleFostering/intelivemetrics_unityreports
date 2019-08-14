@@ -18,7 +18,7 @@ implements Intelivemetrics_Unityreports_Model_Request_Interface {
         $syncStat = Mage::getModel('unityreports/admin_status_cron_sync')->toHtml();
         $statStat = Mage::getModel('unityreports/admin_status_cron_stat')->toHtml();
         $countStat = Mage::getModel('unityreports/admin_status_cron_count')->toHtml();
-        $globalStat = Mage::getModel('unityreports/admin_status_cron_globalcounters')->toHtml();
+        $globalStat = Mage::getModel('unityreports/admin_status_cron_globalCounters')->toHtml();
         $mageStat = Mage::getModel('unityreports/admin_status_cron_mage')->toHtml();
         
         $out="Sync: {$syncStat}
