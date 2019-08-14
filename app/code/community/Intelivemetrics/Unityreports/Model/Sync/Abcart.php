@@ -112,6 +112,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Abcart extends Intelivemetrics_Uni
             $abcartsTable = Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/abcarts');
             $collection = Mage::getModel('sales/quote')->getCollection();
             $collection->getSelect()
+                    ->where("items_count>0")
                     ->where("DATE( `created_at` ) < DATE_SUB( CURDATE( ) , INTERVAL 1 DAY )") //don't sync todays quotes because they may become sales
                     ->where("DATE( `created_at` ) > DATE_SUB( CURDATE( ) , INTERVAL 14 DAY )") //don't sync quotes more than 14 days old
                     ->where("main_table.entity_id NOT IN (SELECT entity_id FROM $abcartsTable WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")

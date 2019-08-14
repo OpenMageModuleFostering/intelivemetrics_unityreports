@@ -39,6 +39,17 @@ extends Intelivemetrics_Unityreports_Model_Cron{
                 return true;
             }
 
+            //sync customers and customer actions
+            if (($res1 = Mage::getModel('unityreports/sync_customer')->runSync()) !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
+                $helper->debug('OK syncing customers');
+            }
+            if (($res2 = Mage::getModel('unityreports/sync_customerAction')->runSync()) !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
+                $helper->debug('OK syncing customer actions');
+            }
+            if ($res1 !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC || $res2 !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
+                return true;
+            }
+
             //sync orders & abcarts
             if (($res1 = Mage::getModel('unityreports/sync_order')->runSync()) !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
                 $helper->debug('OK syncing orders');
@@ -56,17 +67,6 @@ extends Intelivemetrics_Unityreports_Model_Cron{
             }
             if (($res2 = Mage::getModel('unityreports/sync_creditnote')->runSync()) !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
                 $helper->debug('OK syncing credit memos');
-            }
-            if ($res1 !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC || $res2 !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
-                return true;
-            }
-
-            //sync customers and customer actions
-            if (($res1 = Mage::getModel('unityreports/sync_customer')->runSync()) !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
-                $helper->debug('OK syncing customers');
-            }
-            if (($res2 = Mage::getModel('unityreports/sync_customerAction')->runSync()) !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
-                $helper->debug('OK syncing customer actions');
             }
             if ($res1 !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC || $res2 !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
                 return true;
