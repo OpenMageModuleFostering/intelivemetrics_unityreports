@@ -74,20 +74,35 @@ class Intelivemetrics_Unityreports_Model_Sync_Product extends Intelivemetrics_Un
             $adminStore = Mage_Core_Model_App::ADMIN_STORE_ID;
             Mage::app()->setCurrentStore($adminStore);
 
+            //get additional produc attributes list
+            $attribs = Intelivemetrics_Unityreports_Model_Utils::getProductAttributesToSync();
+
+            //build attrib list to take in
+            $_attribs = array('name', 'sku', 'type_id', 'created_at', 'updated_at', 'visibility', 'status');
+            if (count($attribs)) {
+                foreach ($attribs as $_code => $_id) {
+                    $_attribs[] = $_code;
+                }
+            }
+
             $collection = Mage::getModel('catalog/product')->getCollection()
-                    ->addAttributeToSelect(array('name', 'sku', 'type_id', 'created_at', 'updated_at', 'visibility', 'status'))
-                    ->addAttributeToSort('updated_at', 'ASC');
-            //add price 
-            $collection->joinAttribute('price', 'catalog_product/price', 'entity_id', null, 'left', $adminStore);
-            //add stock
-            $collection->joinField('qty', 'cataloginventory/stock_item', 'qty', 'product_id=entity_id', '{{table}}.stock_id=1', 'left');
-            //filter already sent
+                    ->addAttributeToSelect($_attribs)
+                    ->addAttributeToSort('updated_at', 'ASC')
+                    //add price 
+                    ->joinAttribute('price', 'catalog_product/price', 'entity_id', null, 'left', $adminStore)
+                    //add stock
+                    ->joinField('qty', 'cataloginventory/stock_item', 'qty', 'product_id=entity_id', '{{table}}.stock_id=1', 'left')
+                    ;
+
             $table = Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/products');
             $collection->getSelect()
-                    ->where("e.sku IS NOT NULL")
+                    //filter already sent
                     ->where("e.entity_id NOT IN (SELECT product_id FROM $table WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")
+                    //don't send product immediatly after creation because attrib data is usually added later
+                    ->where("TIMESTAMPDIFF(HOUR,e.created_at,'{$now}')>24")
                     ->limit($limit)
             ;
+//            $helper->debug($collection->getSelectSql()->__toString());
 
             // se non ci sono record, esce
             if (count($collection) == 0) {
@@ -126,8 +141,22 @@ class Intelivemetrics_Unityreports_Model_Sync_Product extends Intelivemetrics_Un
                     }
                     $data['item_' . $product->getEntityId()]['parent_id'] = $parentId;
                 }
-            }
 
+                //add custom options
+                if (is_array($attribs) && count($attribs) > 0) {
+                    foreach ($attribs as $_code => $_id) {
+                        $_value = ($product->getAttributeText($_code) ? $product->getAttributeText($_code) : $product->getData($_code));
+                        if (!$_value)
+                            continue;
+
+                        $data['item_' . $product->getEntityId()]['options'][] = array(
+                            'attribute_id' => $_id,
+                            'label' => $_code,
+                            'value' => $_value,
+                        );
+                    }
+                }
+            }
 
             return $data;
         } catch (Exception $ex) {
@@ -139,4 +168,3 @@ class Intelivemetrics_Unityreports_Model_Sync_Product extends Intelivemetrics_Un
 
 }
 
-?>

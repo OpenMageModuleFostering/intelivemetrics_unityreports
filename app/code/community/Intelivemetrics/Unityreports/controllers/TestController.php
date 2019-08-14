@@ -255,37 +255,94 @@ td {text-align: left; font-size: 80%; padding: 4px; border-bottom: 1px solid bla
     protected function _sync() {
         Mage::getModel('unityreports/cron_sync')->runSync();
     }
+
     protected function _request() {
         Mage::getModel('unityreports/cron_request')->check();
     }
+
     protected function _abcarts() {
-         Mage::getModel('unityreports/sync_abcart')->runSync();
+        Mage::getModel('unityreports/sync_abcart')->runSync();
     }
+
     protected function _customers() {
-         Mage::getModel('unityreports/sync_customer')->runSync();
+        Mage::getModel('unityreports/sync_customer')->runSync();
     }
+
     protected function _actions() {
-         Mage::getModel('unityreports/sync_customerAction')->runSync();
+        Mage::getModel('unityreports/sync_customerAction')->runSync();
     }
+
     protected function _invoices() {
         Mage::getModel('unityreports/sync_invoice')->runSync();
     }
+
     protected function _orders() {
         Mage::getModel('unityreports/sync_order')->runSync();
     }
+
     protected function _returns() {
         Mage::getModel('unityreports/sync_creditnote')->runSync();
     }
+
     protected function _products() {
         Mage::getModel('unityreports/sync_product')->runSync();
     }
+
     protected function _counters() {
         Mage::getModel('unityreports/cron_count')->runSync();
     }
+
     protected function _variations() {
         Mage::getModel('unityreports/sync_productVariation')->runSync();
     }
+
     protected function _fix() {
+        
+    }
+
+    protected function _stock() {
+
+        Mage::getModel('unityreports/cron_stock')->runSync();
+        
+//        $stock = Mage::getModel('cataloginventory/stock_item')->loadByProduct(1505);
+//        echo "<pre>";
+//        echo get_class($stock);
+//        print_r($stock->getAvailableQtyForSale());
+//        echo "</pre>";
+        
+        
+//        $stockIds = Mage::getModel('cataloginventory/stock_item')
+//                ->getCollection()
+//                ->addQtyFilter('>', 0)
+//                ->setPageSize(10)
+//        //->getAllIds()
+//        ;
+//        echo get_class($stockIds);
+//        //echo $stockIds->getSelectSql()->__toString();
+//        foreach ($stockIds as $s) {
+//            print_r($s->getData());
+//        }
+        
+        
+//        $helper = Mage::helper('unityreports');
+//        $db = Mage::getSingleton('unityreports/utils')->getDb();
+//        $table = Mage::getSingleton('unityreports/utils')->getTableName('cataloginventory/stock_item');
+//        echo $sql = "SELECT product_id as id, SUM(qty) as s FROM {$table} GROUP BY product_id HAVING s>0";
+//        $result = $db->query($sql);
+//
+//        if (!$result) {
+//            $helper->debug("Cannot query: {$sql}");
+//            return FALSE;
+//        }
+//
+//        $row = $result->fetchAll(PDO::FETCH_ASSOC);
+//        print_r($row);
+//        if (!$row) {
+//            return 0;
+//        }
+//
+//        echo $row['c'];
+        
     }
 
     public function indexAction() {

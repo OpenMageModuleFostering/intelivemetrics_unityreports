@@ -57,8 +57,6 @@ class Intelivemetrics_Unityreports_IndexController extends Mage_Adminhtml_Contro
             $success = false;
         }
 
-        Mage::log("Complete");
-
         if ($success) {
             $msg = $msg . "<br/> Testing completed successfully, if you are still experiencing difficulties please contact us on <a target='_blank' href='http://www.unityreports.com/contacts'>Unityreports.com</a>.";
             Mage::getSingleton('adminhtml/session')->addSuccess($msg);

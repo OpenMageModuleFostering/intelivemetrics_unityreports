@@ -41,9 +41,9 @@ class Intelivemetrics_Unityreports_Model_Admin_Status_Cron extends Mage_Core_Mod
         $status = self::getStatus();
         if (is_array($status)) {
             if ($status['status'] == 0) {
-                return 'Inactive';
+                return '<b>Inactive</b>';
             } elseif ($status['status'] == 1) {
-                return 'Active - last executed at:' . $status['executed_at'];
+                return '<b>Active</b> - last executed at:' . $status['executed_at'];
             }
         }
 

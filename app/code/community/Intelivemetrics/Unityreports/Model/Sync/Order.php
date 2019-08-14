@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Send orders data
  *
@@ -9,8 +8,6 @@
  * @copyright Copyright (c) 2014 Intelive Metrics Srl
  * @author    Eduard Gabriel Dumitrescu (balaur@gmail.com)
  */
-
-
 class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unityreports_Model_Sync implements Intelivemetrics_Unityreports_Model_Sync_Interface {
 
     const ENTITY_TYPE = 'sales_order';
@@ -92,13 +89,14 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
                     ->limit($limit)
             ;
             //$helper->debug($collection->getSelectSql()->__toString());
-                    
-
             // nothing to sync get out
             if (count($collection) == 0) {
                 $helper->debug('No order data found to sync', Zend_Log::INFO);
                 return null;
             }
+
+            //get additional produc attributes list
+            $attribs = Intelivemetrics_Unityreports_Model_Utils::getProductAttributesToSync();
 
             // pack order data
             $data = array();
@@ -106,7 +104,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
             $category = Mage::getModel('catalog/category');
             foreach ($collection as $order) {
                 $attributes = $order->getData();
-                
+
                 try {
                     $currency = $attributes['order_currency_code'];
 
@@ -117,6 +115,8 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
                         'coupon_code' => $attributes['coupon_code'],
                         'store_id' => $attributes['store_id'],
                         'customer_id' => $attributes['customer_id'],
+                        'customer_email' => $attributes['customer_email'],
+                        'customer_name' => $attributes['customer_firstname'].' '.$attributes['customer_lastname'],
                         'customer_group' => $this->_getGroupCode($attributes['group_id']),
                         'grand_total' => $attributes['grand_total'],
                         'shipping_amount' => $attributes['shipping_amount'],
@@ -135,7 +135,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
                         'medium' => $attributes['medium'],
                         'content' => $attributes['content'],
                         'campaign' => $attributes['campaign'],
-                        'payment_method' => $order->getPayment()->getMethod()
+                        'payment_method' => (is_object($order->getPayment())?$order->getPayment()->getMethod():'unknown')
                     );
 
                     // indirizzo di spedizione
@@ -185,7 +185,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
 
                         //recupera path categorie, solo della prima categoria associata
                         //TODO: what if no category info is available? put some fake cateogry like UNKNOWN
-                        if ( ($product = $item->getProduct()) || ($product=Mage::getModel('catalog/product')->load($item->getProductId())) ) {
+                        if (($product = $item->getProduct()) || ($product = Mage::getModel('catalog/product')->load($item->getProductId()))) {
                             $mainCategory = $product->getCategoryCollection()->getFirstItem();
                             $ids = array_reverse($mainCategory->getPathIds());
                             $counter = 1;
@@ -205,7 +205,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
                             $item_arr['categories'] = $_categories;
                         }
 
-                        // recupera le opzioni scelte
+                        //add configurable options 
                         if ($item_attribs['product_type'] == 'configurable') {
                             $productOptions = $item->getProductOptions();
                             $superAttributeIds = array();
@@ -223,6 +223,20 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
                             }
                             $item_arr['options'][] = $option;
                         }
+                        
+                        //add custom prod attributes
+                        if (is_array($attribs) && count($attribs) > 0) {
+                            foreach ($attribs as $_code => $_id) {
+                                $_value = ($product->getAttributeText($_code) ? $product->getAttributeText($_code) : $product->getData($_code));
+                                if(!$_value) continue; 
+                                
+                                $item_arr['options'][] = array(
+                                    'attribute_id' => $_id,
+                                    'label' => $_code,
+                                    'value' => $_value,
+                                );
+                            }
+                        }
 
                         $items_arr['item_' . $item_attribs['item_id']] = $item_arr;
                     }
@@ -232,14 +246,14 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
                     $order_count++;
                 } catch (Exception $ex) {
                     $helper->debug($ex->getMessage(), Zend_Log::ERR);
-                    $helper->debug('FILE: ' . __FILE__.'LINE: ' . __LINE__);
+                    $helper->debug('FILE: ' . __FILE__ . 'LINE: ' . __LINE__);
                 }
             }//end order loop
 
             return $data;
         } catch (Exception $ex) {
             $helper->debug($ex->getMessage(), Zend_Log::ERR);
-            $helper->debug('FILE: ' . __FILE__.'LINE: ' . __LINE__);
+            $helper->debug('FILE: ' . __FILE__ . 'LINE: ' . __LINE__);
             return null;
         }
     }

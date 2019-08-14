@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Intelivemetrics_Unityreports>
-            <version>0.7.7</version>
+            <version>0.8.1</version>
         </Intelivemetrics_Unityreports>
     </modules>
     <global>
@@ -137,22 +137,6 @@
                     <model>unityreports/cron_sync::runSync</model>
                 </run>
             </unityreports_sync>
-            <unityreports_count>
-                <schedule>
-                    <cron_expr>0 3 * * *</cron_expr>
-                </schedule>
-                <run>
-                    <model>unityreports/cron_count::runSync</model>
-                </run>
-            </unityreports_count>
-            <unityreports_globalcounter>
-                <schedule>
-                    <cron_expr>10 3 * * *</cron_expr>
-                </schedule>
-                <run>
-                    <model>unityreports/cron_globalCounters::runSync</model>
-                </run>
-            </unityreports_globalcounter>
             <unityreports_stat>
                 <schedule>
                     <cron_expr>*/5 * * * *</cron_expr>
@@ -161,6 +145,22 @@
                     <model>unityreports/cron_request::check</model>
                 </run>
             </unityreports_stat>
+            <unityreports_stock>
+                <schedule>
+                    <cron_expr>0 2 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>unityreports/cron_stock::runSync</model>
+                </run>
+            </unityreports_stock>
+            <unityreports_count>
+                <schedule>
+                    <cron_expr>0 3 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>unityreports/cron_count::runSync</model>
+                </run>
+            </unityreports_count>
         </jobs>
     </crontab>
     <default>

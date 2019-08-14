@@ -67,7 +67,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Invoice extends Intelivemetrics_Un
         $ordersTableMage = Intelivemetrics_Unityreports_Model_Utils::getTableName('sales_flat_order');
         $now = date('Y-m-d H:i:s');
         try {
-            if (self::USE_SHIPPING) {
+            if (Mage::getStoreConfig('unityreports/advanced/use_shipping')==2) {
                 $collection = Mage::getModel('sales/order_shipment')->getCollection()
                         ->addAttributeToSelect('*');
                 $collection->getSelect()
@@ -83,6 +83,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Invoice extends Intelivemetrics_Un
                         ->joinLeft(array('orders' => $ordersTableMage), "orders.entity_id=main_table.order_id", array('o_increment_id' => 'increment_id'))
                         ->where("main_table.increment_id NOT IN (SELECT increment_id FROM $invoicesTable WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")
                         ->where("orders.increment_id IN (SELECT increment_id FROM $ordersTable WHERE synced=1)")
+                        ->where("main_table.created_at > '2014-01-01'")//HMIZATE
                         ->limit($limit)
                 ;
             }

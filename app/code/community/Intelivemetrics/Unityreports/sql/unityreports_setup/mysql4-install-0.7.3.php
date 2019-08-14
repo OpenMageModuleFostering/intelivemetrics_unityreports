@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `{$this->getTable('unityreports/settings')}` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `{$this->getTable('unityreports/settings')}` (`key`, `val`) VALUES
-('max_items_per_sync', '10');
+('max_items_per_sync', '100');
 
 COMMIT;
 ");

@@ -8,12 +8,12 @@
  * @copyright Copyright (c) 2014 Intelive Metrics Srl
  * @author    Eduard Gabriel Dumitrescu (balaur@gmail.com)
  */
-
-
 class Intelivemetrics_Unityreports_Model_Utils {
-    
+
     protected static $_db = null;
     protected static $_soapClient = null;
+    protected static $_prodAttributes = null;
+    protected static $_customerAttributes = null;
 
     public static function getTableName($table) {
         return Mage::getSingleton('core/resource')->getTableName($table);
@@ -50,7 +50,7 @@ class Intelivemetrics_Unityreports_Model_Utils {
         $db = Mage::getModel('core/resource')->getConnection('core_read');
         $table = self::getTableName('unityreports/settings');
         $key = self::sanitize($key);
-        
+
         if (is_null($key)) {
             $result = $db->query("SELECT `val` FROM `{$table}`");
             $out = array();
@@ -79,7 +79,7 @@ class Intelivemetrics_Unityreports_Model_Utils {
         $table = self::getTableName('unityreports/settings');
         $key = self::sanitize($key);
         $val = self::sanitize($val);
-        
+
         try {
             $db->query("REPLACE INTO `{$table}`(`key`,`val`) VALUES('{$key}','{$val}')");
             self::log("set $key to $val");
@@ -89,7 +89,7 @@ class Intelivemetrics_Unityreports_Model_Utils {
             return false;
         }
     }
-    
+
     /**
      * Gets a SOAP client
      * @return \Zend_Soap_Client
@@ -98,43 +98,67 @@ class Intelivemetrics_Unityreports_Model_Utils {
         $ws_endpoint = Mage::getStoreConfig('unityreports/general/ws_endpoint');
 
         // inizializza client SOAP
-        if(is_null(self::$_soapClient)){
+        if (is_null(self::$_soapClient)) {
             self::$_soapClient = new Zend_Soap_Client($ws_endpoint . "?wsdl");
             self::$_soapClient->setWsdlCache(1);
         }
 
         return self::$_soapClient;
     }
-    
+
     /**
      * Get db write connection
      * @return type
      */
-    public static function getDb(){
-        if(is_null(self::$_db)){
+    public static function getDb() {
+        if (is_null(self::$_db)) {
             self::$_db = Mage::getModel('core/resource')->getConnection('core_write');
         }
-        
+
         return self::$_db;
     }
-    
+
     /**
      * How many items of each type to send in one sync session
      * @return int
      */
-    public static function getMaxItemsPerSync(){
+    public static function getMaxItemsPerSync() {
         $items = Intelivemetrics_Unityreports_Model_Utils::getConfig('max_items_per_sync');
-        if(!$items || is_null($items)){
+        if (!$items || is_null($items)) {
             $items = Intelivemetrics_Unityreports_Model_Config::MAX_ITEMS_PER_SYNC;
         }
-        
+
         return $items;
     }
-    
-    public static function prepareDataForSending($data){
+
+    public static function prepareDataForSending($data) {
         return base64_encode(gzcompress(serialize($data)));
     }
 
-}
+    public static function getProductAttributesToSync() {
+        if (is_null(self::$_prodAttributes)) {
+            $attributes = Mage::getResourceModel('catalog/product_attribute_collection')
+                    ->addFieldToFilter('is_user_defined', 1)
+                    ->getItems();
+            foreach ($attributes as $attribute) {
+                self::$_prodAttributes[$attribute->getAttributeCode()] = (int) $attribute->getId();
+            }
+        }
 
-?>
+        return self::$_prodAttributes;
+    }
+    
+    public static function getCustomerAttributesToSync() {
+        if (is_null(self::$_customerAttributes)) {
+            $attributes = Mage::getResourceModel('customer/attribute_collection')
+                    ->addFieldToFilter('is_user_defined', 1)
+                    ->getItems();
+            foreach ($attributes as $attribute) {
+                self::$_customerAttributes[$attribute->getAttributeCode()] = (int) $attribute->getId();
+            }
+        }
+
+        return self::$_customerAttributes;
+    }
+
+}

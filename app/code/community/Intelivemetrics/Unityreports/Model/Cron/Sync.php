@@ -31,19 +31,12 @@ extends Intelivemetrics_Unityreports_Model_Cron{
             //sync prods & variations 
             if (($res1 = Mage::getModel('unityreports/sync_product')->runSync()) !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
                 $helper->debug('OK syncing products');
-            }
-            if (($res2 = Mage::getModel('unityreports/sync_productVariation')->runSync()) !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
-                $helper->debug('OK syncing product variations');
-            }
-            if ($res1 !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC || $res2 !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
                 return true;
             }
 
             //sync customers 
             if (($res1 = Mage::getModel('unityreports/sync_customer')->runSync()) !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
                 $helper->debug('OK syncing customers');
-            }
-            if ($res1 !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
                 return true;
             }
 
@@ -76,6 +69,7 @@ extends Intelivemetrics_Unityreports_Model_Cron{
             if ($res2 !== Intelivemetrics_Unityreports_Model_Sync::NOTHING_TO_SYNC) {
                 return true;
             }
+            
         } catch (Exception $e) {
             $helper->debug($e, Zend_Log::ERR);
             return false;
