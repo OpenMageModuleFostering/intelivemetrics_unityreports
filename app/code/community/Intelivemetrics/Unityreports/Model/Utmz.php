@@ -102,7 +102,7 @@ class Intelivemetrics_Unityreports_Model_Utmz {
         if($this->utmz_gclid){
             if(!$this->utmz_source) $this->utmz_source='google';
             if(!$this->utmz_campaign) $this->utmz_campaign='(not set)';
-            if(!$this->utmz_medium) $this->utmz_source='cpc';
+            if(!$this->utmz_medium) $this->utmz_medium='cpc';
         }
     }
     

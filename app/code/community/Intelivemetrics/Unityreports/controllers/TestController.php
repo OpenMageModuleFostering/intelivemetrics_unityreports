@@ -8,6 +8,10 @@
  * @copyright Copyright (c) 2014 Intelive Metrics Srl
  * @author    Eduard Gabriel Dumitrescu (balaur@gmail.com)
  */
+error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE ^ E_DEPRECATED ^ E_STRICT);
+error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
+ini_set('display_errors', 1);
+
 class Intelivemetrics_Unityreports_TestController extends Mage_Core_Controller_Front_Action {
 
     /**

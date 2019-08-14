@@ -54,7 +54,8 @@ class Intelivemetrics_Unityreports_Model_Sync_Invoice extends Intelivemetrics_Un
     }
 
     /**
-     * Esegue recupero dati delle fatture
+     * Discover payed/unpayed orders based on invoices or shipments
+     * If "orders" is selected, all orders are considered to be payed
      * 
      * @param date $last_imp_date ultima data di riferimento dll'ultima esportazione
      * @param int $max_records numero massimo di records (indicativo)
@@ -67,7 +68,22 @@ class Intelivemetrics_Unityreports_Model_Sync_Invoice extends Intelivemetrics_Un
         $ordersTableMage = Intelivemetrics_Unityreports_Model_Utils::getTableName('sales_flat_order');
         $now = date('Y-m-d H:i:s');
         try {
-            if (Mage::getStoreConfig('unityreports/advanced/use_shipping')==2) {
+            if (Mage::getStoreConfig('unityreports/advanced/use_shipping')==3) {
+                /**
+                 * using order data - all orders are considered payed
+                 */
+                $collection = Mage::getModel('sales/order')->getCollection()
+                        ->addAttributeToSelect('*')
+                         ->addExpressionFieldToSelect('order_id', 'entity_id', 'entity_id');
+                $collection->getSelect()
+                        ->where("main_table.increment_id NOT IN (SELECT increment_id FROM $invoicesTable WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")
+                        ->where("main_table.increment_id IN (SELECT increment_id FROM $ordersTable WHERE synced=1)")
+                        ->limit($limit)
+                ;
+            }elseif (Mage::getStoreConfig('unityreports/advanced/use_shipping')==2) {
+                /**
+                 * using shipping data - all shipped orders are payed
+                 */
                 $collection = Mage::getModel('sales/order_shipment')->getCollection()
                         ->addAttributeToSelect('*');
                 $collection->getSelect()
@@ -77,13 +93,15 @@ class Intelivemetrics_Unityreports_Model_Sync_Invoice extends Intelivemetrics_Un
                         ->limit($limit)
                 ;
             } else {
+                /**
+                 * using invoice data (default) - all invoiced orders are payed
+                 */
                 $collection = Mage::getModel('sales/order_invoice')->getCollection()
                         ->addAttributeToSelect('*');
                 $collection->getSelect()
                         ->joinLeft(array('orders' => $ordersTableMage), "orders.entity_id=main_table.order_id", array('o_increment_id' => 'increment_id'))
                         ->where("main_table.increment_id NOT IN (SELECT increment_id FROM $invoicesTable WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")
                         ->where("orders.increment_id IN (SELECT increment_id FROM $ordersTable WHERE synced=1)")
-                        ->where("main_table.created_at > '2014-01-01'")//HMIZATE
                         ->limit($limit)
                 ;
             }
@@ -115,7 +133,8 @@ class Intelivemetrics_Unityreports_Model_Sync_Invoice extends Intelivemetrics_Un
                 );
                 //get items info
                 foreach ($invoice->getItemsCollection() as $item) {
-                    $order_fields['items'][] = array('id' => $item->getProductId(), 'qty' => $item->getQty());
+                    $qty = (Mage::getStoreConfig('unityreports/advanced/use_shipping')==3?$item->getQtyOrdered():$item->getQty());
+                    $order_fields['items'][] = array('id' => $item->getProductId(), 'qty' => $qty);
                 }
                 $data["invoice_" . $invoice->getIncrementId()] = $order_fields;
             }
