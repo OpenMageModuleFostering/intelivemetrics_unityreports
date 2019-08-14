@@ -63,12 +63,13 @@ class Intelivemetrics_Unityreports_Model_Sync_Invoice extends Intelivemetrics_Un
         $helper = Mage::helper('unityreports');
         $invoicesTable = Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/invoices');
         $ordersTable = Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/orders');
+        $ordersTableMage = Intelivemetrics_Unityreports_Model_Utils::getTableName('sales_flat_order');
         $now = date('Y-m-d H:i:s');
         try {
             $collection = Mage::getModel('sales/order_invoice')->getCollection()
                     ->addAttributeToSelect('*');
             $collection->getSelect()
-                    ->joinLeft(array('orders' => 'sales_flat_order'), "orders.entity_id=main_table.order_id", array('o_increment_id' => 'increment_id'))
+                    ->joinLeft(array('orders' => $ordersTableMage), "orders.entity_id=main_table.order_id", array('o_increment_id' => 'increment_id'))
                     ->where("main_table.increment_id NOT IN (SELECT increment_id FROM $invoicesTable WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")
                     ->where("orders.increment_id IN (SELECT increment_id FROM $ordersTable WHERE synced=1)")
                     ->limit($limit)

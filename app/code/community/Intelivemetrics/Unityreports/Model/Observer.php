@@ -13,7 +13,7 @@ class Intelivemetrics_Unityreports_Model_Observer {
     protected function _saveCampaignInfo($id, $source, $medium, $content, $campaign, $type = 'order') {
         $db = Mage::getSingleton('unityreports/utils')->getDb();
         $table = Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/campaigns');
-        $query = "INSERT INTO {$table}(id,source,medium,content,campaign,type) VALUES
+        $query = "INSERT IGNORE INTO {$table}(id,source,medium,content,campaign,type) VALUES
                                 ('{$id}','{$source}','{$medium}','{$content}','{$campaign}','{$type}')";
         $db->query($query);
     }
