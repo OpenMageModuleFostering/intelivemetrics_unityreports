@@ -41,6 +41,13 @@ var Utmza = function (domain) {
             ;
     domain = domain || window.location.hostname;
     
+    /* If URL parameters contain 'gclid=', tag as Google CPC */
+    if (window.location.search.indexOf('gclid=')) {
+       c = '(not set)';
+       s = 'google';
+       m = 'cpc';
+    }
+    
     if (c) j.push('c=' + c);
     if (s) j.push('s=' + s);
     if (m) j.push('m=' + m);

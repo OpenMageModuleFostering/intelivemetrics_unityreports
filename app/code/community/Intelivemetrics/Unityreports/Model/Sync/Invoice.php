@@ -101,6 +101,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Invoice extends Intelivemetrics_Un
                 $order_fields = array(
                     'entity_name' => self::ENTITY_TYPE,
                     'id' => $invoice->getId(),
+                    'store_id' => $invoice->getStoreId(),
                     'increment_id' => $invoice->getIncrementId(),
                     'order_id' => $invoice->getOrderId(),
                     'grand_total' => $attributes['grand_total'],

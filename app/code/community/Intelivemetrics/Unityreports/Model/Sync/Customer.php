@@ -8,14 +8,12 @@
  * @copyright Copyright (c) 2014 Intelive Metrics Srl
  * @author    Eduard Gabriel Dumitrescu (balaur@gmail.com)
  */
-
-
 class Intelivemetrics_Unityreports_Model_Sync_Customer extends Intelivemetrics_Unityreports_Model_Sync implements Intelivemetrics_Unityreports_Model_Sync_Interface {
 
     const ENTITY_TYPE = 'customer';
 
     protected $_groups = array();
-    
+
     protected function _getGroupCode($groupId) {
         if (!isset($this->_groups[$groupId])) {
             $group = Mage::getModel('customer/group')->load($groupId);
@@ -44,7 +42,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Customer extends Intelivemetrics_U
             }
         } catch (Exception $ex) {
             Mage::helper('unityreports')->debug($ex->getMessage(), Zend_Log::ERR);
-            Mage::helper('unityreports')->debug('FILE: ' . __FILE__.'LINE: ' . __LINE__);
+            Mage::helper('unityreports')->debug('FILE: ' . __FILE__ . 'LINE: ' . __LINE__);
         }
     }
 
@@ -65,7 +63,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Customer extends Intelivemetrics_U
             $helper->debug("Sincronizzati $counter clienti");
         } catch (Exception $ex) {
             $helper->debug($ex->getMessage(), Zend_Log::ERR);
-            $helper->debug('FILE: ' . __FILE__.'LINE: ' . __LINE__);
+            $helper->debug('FILE: ' . __FILE__ . 'LINE: ' . __LINE__);
         }
     }
 
@@ -86,7 +84,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Customer extends Intelivemetrics_U
                     ->getCollection()
                     ->addAttributeToSelect('*');
             $collection->getSelect()
-                     ->joinLeft(
+                    ->joinLeft(
                             array('campaigns' => $campaignsTable), "entity_id=campaigns.id AND campaigns.type='customer'", array('source', 'medium', 'content', 'campaign')
                     )
                     ->where("entity_id NOT IN (SELECT customer_id FROM $table WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")
@@ -104,15 +102,16 @@ class Intelivemetrics_Unityreports_Model_Sync_Customer extends Intelivemetrics_U
                 $customerData = array(
                     'entity_name' => self::ENTITY_TYPE,
                     'id' => $customer->getId(),
+                    'store_id' => $customer->getStoreId(),
                     'name' => $customer->getName(),
                     'dob' => $customer->getDob(),
                     'email' => $customer->getEmail(),
                     'group' => $this->_getGroupCode($customer->getGroupId()),
                     'gender' => $customer->getGender(),
-                    'source' => $customer->getSource(),
-                    'medium' => $customer->getMedium(),
-                    'content' => $customer->getContent(),
-                    'campaign' => $customer->getCampaign(),
+                    'source' => (empty($customer->getSource()) ? self::CHANNEL_UNTRACKED : $customer->getSource()),
+                    'medium' => (empty($customer->getMedium()) ? self::CHANNEL_UNTRACKED : $customer->getMedium()),
+                    'content' => (empty($customer->getContent()) ? self::CHANNEL_UNTRACKED : $customer->getContent()),
+                    'campaign' => (empty($customer->getCampaign()) ? self::CHANNEL_UNTRACKED : $customer->getCampaign()),
                     'created_at' => $customer->getCreatedAt(),
                 );
 
@@ -132,7 +131,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Customer extends Intelivemetrics_U
             return $data;
         } catch (Exception $ex) {
             $helper->debug($ex->getMessage(), Zend_Log::ERR);
-            $helper->debug('FILE: ' . __FILE__.'LINE: ' . __LINE__);
+            $helper->debug('FILE: ' . __FILE__ . 'LINE: ' . __LINE__);
             return null;
         }
     }

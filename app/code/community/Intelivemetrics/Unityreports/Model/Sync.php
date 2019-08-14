@@ -10,8 +10,9 @@
  */
 class Intelivemetrics_Unityreports_Model_Sync {
 
-    const MAX_SENTS = 3; //quante volte il connettore prova ad inviare i dati
+    const MAX_SENTS = 3; //how many times the connector trys sending the data
     const NOTHING_TO_SYNC = 1;
+    CONST CHANNEL_UNTRACKED = '(untracked)';//default value for acquisition
 
     /**
      * Gets a SOAP client

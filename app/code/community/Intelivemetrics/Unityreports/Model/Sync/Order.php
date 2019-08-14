@@ -116,7 +116,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
                         'store_id' => $attributes['store_id'],
                         'customer_id' => $attributes['customer_id'],
                         'customer_email' => $attributes['customer_email'],
-                        'customer_name' => $attributes['customer_firstname'].' '.$attributes['customer_lastname'],
+                        'customer_name' => $attributes['customer_firstname'] . ' ' . $attributes['customer_lastname'],
                         'customer_group' => $this->_getGroupCode($attributes['group_id']),
                         'grand_total' => $attributes['grand_total'],
                         'shipping_amount' => $attributes['shipping_amount'],
@@ -131,11 +131,11 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
                         'status' => $attributes['status'],
                         'state' => $attributes['state'],
                         'shipping_description' => $attributes['shipping_description'],
-                        'source' => $attributes['source'],
-                        'medium' => $attributes['medium'],
-                        'content' => $attributes['content'],
-                        'campaign' => $attributes['campaign'],
-                        'payment_method' => (is_object($order->getPayment())?$order->getPayment()->getMethod():'unknown')
+                        'source' => (empty($attributes['source']) ? self::CHANNEL_UNTRACKED : $attributes['source']),
+                        'medium' => (empty($attributes['medium']) ? self::CHANNEL_UNTRACKED : $attributes['medium']),
+                        'content' => (empty($attributes['content']) ? self::CHANNEL_UNTRACKED : $attributes['content']),
+                        'campaign' => (empty($attributes['campaign']) ? self::CHANNEL_UNTRACKED : $attributes['campaign']),
+                        'payment_method' => (is_object($order->getPayment()) ? $order->getPayment()->getMethod() : 'unknown')
                     );
 
                     // indirizzo di spedizione
@@ -223,13 +223,14 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
                             }
                             $item_arr['options'][] = $option;
                         }
-                        
+
                         //add custom prod attributes
                         if (is_array($attribs) && count($attribs) > 0) {
                             foreach ($attribs as $_code => $_id) {
                                 $_value = ($product->getAttributeText($_code) ? $product->getAttributeText($_code) : $product->getData($_code));
-                                if(!$_value) continue; 
-                                
+                                if (!$_value)
+                                    continue;
+
                                 $item_arr['options'][] = array(
                                     'attribute_id' => $_id,
                                     'label' => $_code,

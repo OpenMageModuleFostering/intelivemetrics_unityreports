@@ -87,6 +87,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Creditnote extends Intelivemetrics
                 $order_fields = array(
                     'entity_name' => self::ENTITY_TYPE,
                     'id' => $creditnote->getId(),
+                    'store_id' => $creditnote->getStoreId(),
                     'increment_id' => $creditnote->getIncrementId(),
                     'order_id' => $creditnote->getOrderId(),
                     'grand_total' => $attributes['grand_total'],

@@ -28,14 +28,28 @@ class Intelivemetrics_Unityreports_Model_Utmz {
     }
 
     //Grab utmz cookie if it exists
+//    private function _set_utmz() {
+//        if (isset($_COOKIE['__utmz'])) {
+//            $this->utmz = $_COOKIE['__utmz'];
+//            $this->_parse_utmz();
+//        } elseif (isset($_COOKIE['__utmza'])) {
+//            //this is set by the utmz-aternative.js script
+//            $this->utmz = $_COOKIE['__utmza'];
+//            $this->_parse_utmza();
+//        } else
+//            return false;
+//    }
+    
+    //Grab utmz cookie if it exists
+    //precedence is given to utmza
     private function _set_utmz() {
-        if (isset($_COOKIE['__utmz'])) {
-            $this->utmz = $_COOKIE['__utmz'];
-            $this->_parse_utmz();
-        } elseif (isset($_COOKIE['__utmza'])) {
+        if (isset($_COOKIE['__utmza'])) {
             //this is set by the utmz-aternative.js script
             $this->utmz = $_COOKIE['__utmza'];
             $this->_parse_utmza();
+        }elseif (isset($_COOKIE['__utmz'])) {
+            $this->utmz = $_COOKIE['__utmz'];
+            $this->_parse_utmz();
         } else
             return false;
     }
@@ -82,6 +96,13 @@ class Intelivemetrics_Unityreports_Model_Utmz {
                 default:
                 //do nothing
             }
+        }
+        
+        //THIS was added in order to support utmz that only comes with gclid data
+        if($this->utmz_gclid){
+            if(!$this->utmz_source) $this->utmz_source='google';
+            if(!$this->utmz_campaign) $this->utmz_campaign='(not set)';
+            if(!$this->utmz_medium) $this->utmz_source='cpc';
         }
     }
     
