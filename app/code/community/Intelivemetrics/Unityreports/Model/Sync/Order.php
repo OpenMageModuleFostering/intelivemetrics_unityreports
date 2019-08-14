@@ -91,6 +91,8 @@ class Intelivemetrics_Unityreports_Model_Sync_Order extends Intelivemetrics_Unit
                     ->where("main_table.increment_id NOT IN (SELECT increment_id FROM $ordersTable WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")
                     ->limit($limit)
             ;
+            //$helper->debug($collection->getSelectSql()->__toString());
+                    
 
             // nothing to sync get out
             if (count($collection) == 0) {

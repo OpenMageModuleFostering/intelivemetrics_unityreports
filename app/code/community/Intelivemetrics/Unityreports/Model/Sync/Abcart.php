@@ -132,6 +132,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Abcart extends Intelivemetrics_Uni
             foreach ($collection as $quote) {
                 $_quote = array(
                     'id' => $quote->getId(),
+                    'customer_id' => $quote->getCustomerId(),
                     'store_id' => $quote->getStoreId(),
                     'created_at' => $quote->getCreatedAt(),
                     'items' => array()
