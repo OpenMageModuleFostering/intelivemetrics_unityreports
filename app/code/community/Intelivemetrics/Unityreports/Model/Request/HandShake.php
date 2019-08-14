@@ -24,7 +24,8 @@ class Intelivemetrics_Unityreports_Model_Request_HandShake extends Intelivemetri
 
     protected function _getMageInfo() {
         $db =Mage::getSingleton('unityreports/utils')->getDb();
-        $result = $db->query("SELECT * FROM core_resource");
+        $tbl = Intelivemetrics_Unityreports_Model_Utils::getTableName('core_resource');
+        $result = $db->query("SELECT * FROM {$tbl}");
 
         if (!$result) {
             return FALSE;

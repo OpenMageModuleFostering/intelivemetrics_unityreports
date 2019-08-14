@@ -69,6 +69,5 @@ class Intelivemetrics_Unityreports_IndexController extends Mage_Adminhtml_Contro
 
         $this->_redirectReferer();
     }
-
-   
+    
 }

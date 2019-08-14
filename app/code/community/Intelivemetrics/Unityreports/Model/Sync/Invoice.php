@@ -11,6 +11,7 @@
 class Intelivemetrics_Unityreports_Model_Sync_Invoice extends Intelivemetrics_Unityreports_Model_Sync implements Intelivemetrics_Unityreports_Model_Sync_Interface {
 
     const ENTITY_TYPE = 'sales_invoice';
+    const USE_SHIPPING = false; //true extracts data from shipments instead of invoices. some customerms don't generate invoices for all sales
 
     /**
      * Segna gli oggetti inviati
@@ -66,16 +67,27 @@ class Intelivemetrics_Unityreports_Model_Sync_Invoice extends Intelivemetrics_Un
         $ordersTableMage = Intelivemetrics_Unityreports_Model_Utils::getTableName('sales_flat_order');
         $now = date('Y-m-d H:i:s');
         try {
-            $collection = Mage::getModel('sales/order_invoice')->getCollection()
-                    ->addAttributeToSelect('*');
-            $collection->getSelect()
-                    ->joinLeft(array('orders' => $ordersTableMage), "orders.entity_id=main_table.order_id", array('o_increment_id' => 'increment_id'))
-                    ->where("main_table.increment_id NOT IN (SELECT increment_id FROM $invoicesTable WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")
-                    ->where("orders.increment_id IN (SELECT increment_id FROM $ordersTable WHERE synced=1)")
-                    ->limit($limit)
-            ;
+            if (self::USE_SHIPPING) {
+                $collection = Mage::getModel('sales/order_shipment')->getCollection()
+                        ->addAttributeToSelect('*');
+                $collection->getSelect()
+                        ->joinLeft(array('orders' => $ordersTableMage), "orders.entity_id=main_table.order_id", array('o_increment_id' => 'increment_id', 'grand_total', 'shipping_amount', 'shipping_tax_amount', 'subtotal', 'discount_amount', 'tax_amount', 'order_currency_code'))
+                        ->where("main_table.increment_id NOT IN (SELECT increment_id FROM $invoicesTable WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")
+                        ->where("orders.increment_id IN (SELECT increment_id FROM $ordersTable WHERE synced=1)")
+                        ->limit($limit)
+                ;
+            } else {
+                $collection = Mage::getModel('sales/order_invoice')->getCollection()
+                        ->addAttributeToSelect('*');
+                $collection->getSelect()
+                        ->joinLeft(array('orders' => $ordersTableMage), "orders.entity_id=main_table.order_id", array('o_increment_id' => 'increment_id'))
+                        ->where("main_table.increment_id NOT IN (SELECT increment_id FROM $invoicesTable WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")
+                        ->where("orders.increment_id IN (SELECT increment_id FROM $ordersTable WHERE synced=1)")
+                        ->limit($limit)
+                ;
+            }
+//            $helper->debug($collection->getSelectSql()->__toString());
 
-            // se non ci sono record, esce
             if (count($collection) == 0) {
                 $helper->debug('No invoice data found to sync', Zend_Log::INFO);
                 return null;
@@ -112,6 +124,12 @@ class Intelivemetrics_Unityreports_Model_Sync_Invoice extends Intelivemetrics_Un
             $helper->debug('FILE: ' . __FILE__ . 'LINE: ' . __LINE__);
             return null;
         }
+    }
+
+
+    public function testGetData() {
+        $data = $this->_getData(10);
+        return $data;
     }
 
 }
