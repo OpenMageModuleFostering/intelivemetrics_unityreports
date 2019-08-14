@@ -55,6 +55,7 @@ class Intelivemetrics_Unityreports_Model_Request_HandShake extends Intelivemetri
                 'phpinfo' => $this->_getSystemInfo(),
                 'mageinfo' => $this->_getMageInfo(),
                 'ga' => $this->_getGA(),
+                'ip' => $_SERVER['SERVER_ADDR']
             )
         );
 

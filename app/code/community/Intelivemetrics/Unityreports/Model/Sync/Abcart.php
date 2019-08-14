@@ -152,7 +152,8 @@ class Intelivemetrics_Unityreports_Model_Sync_Abcart extends Intelivemetrics_Uni
                             'name' => $item->getName(),
                         );
                     } catch (Exception $ex) {
-                        echo $ex;
+                        $helper->debug($ex->getMessage(), Zend_Log::ERR);
+                        $helper->debug('FILE: ' . __FILE__.'LINE: ' . __LINE__);
                     }
                 }
 
@@ -161,7 +162,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Abcart extends Intelivemetrics_Uni
 
             return $quotes;
         } catch (Exception $ex) {
-            $helper->debug($ex, Zend_Log::ERR);
+            $helper->debug($ex->getMessage(), Zend_Log::ERR);
             $helper->debug('FILE: ' . __FILE__.'LINE: ' . __LINE__);
             return null;
         }
