@@ -108,10 +108,10 @@ class Intelivemetrics_Unityreports_Model_Sync_Customer extends Intelivemetrics_U
                     'email' => $customer->getEmail(),
                     'group' => $this->_getGroupCode($customer->getGroupId()),
                     'gender' => $customer->getGender(),
-                    'source' => (empty($customer->getSource()) ? self::CHANNEL_UNTRACKED : $customer->getSource()),
-                    'medium' => (empty($customer->getMedium()) ? self::CHANNEL_UNTRACKED : $customer->getMedium()),
-                    'content' => (empty($customer->getContent()) ? self::CHANNEL_UNTRACKED : $customer->getContent()),
-                    'campaign' => (empty($customer->getCampaign()) ? self::CHANNEL_UNTRACKED : $customer->getCampaign()),
+                    'source' => (!($customer->getSource()) ? self::CHANNEL_UNTRACKED : $customer->getSource()),
+                    'medium' => (!($customer->getMedium()) ? self::CHANNEL_UNTRACKED : $customer->getMedium()),
+                    'content' => (!($customer->getContent()) ? self::CHANNEL_UNTRACKED : $customer->getContent()),
+                    'campaign' => (!($customer->getCampaign()) ? self::CHANNEL_UNTRACKED : $customer->getCampaign()),
                     'created_at' => $customer->getCreatedAt(),
                 );
 
