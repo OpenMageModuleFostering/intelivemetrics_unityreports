@@ -124,7 +124,11 @@ CREATE TABLE IF NOT EXISTS `{$this->getTable('unityreports/product_counters')}` 
   `views` int(11) NOT NULL DEFAULT '0',
   `unique_views` int(11) DEFAULT '0',
   `addtocarts` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`product_id`)
+  `last_sent_at` DATETIME NULL,
+  `last_updated_at` DATETIME NULL,
+  PRIMARY KEY (`product_id`),
+  INDEX `last_sent` (`last_sent_at`),
+  INDEX `updated_at` (`last_updated_at`)
 ) ENGINE=InnoDb DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
