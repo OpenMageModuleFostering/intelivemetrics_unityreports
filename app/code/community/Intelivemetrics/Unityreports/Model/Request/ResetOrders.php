@@ -23,8 +23,6 @@ class Intelivemetrics_Unityreports_Model_Request_ResetOrders extends Intelivemet
 
         //reset
         $tables = array(
-            Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/creditnotes'),
-            Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/invoices'),
             Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/orders'),
         );
         $db = Mage::getSingleton('unityreports/utils')->getDb();

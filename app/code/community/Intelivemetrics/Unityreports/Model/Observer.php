@@ -63,8 +63,8 @@ class Intelivemetrics_Unityreports_Model_Observer {
             $table = Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/product_counters');
             $prodKey = 'PROD' . $product->getEntityId();
             if (!isset($_SESSION[$prodKey]) || $_SESSION[$prodKey] != 1) {
-                $query = "INSERT INTO $table (product_id,unique_views) VALUES ({$product->getEntityId()},1)
-                            ON DUPLICATE KEY UPDATE unique_views = unique_views+1;";
+                $query = "INSERT INTO $table (product_id,unique_views,last_updated_at) VALUES ({$product->getEntityId()},1,NOW())
+                            ON DUPLICATE KEY UPDATE unique_views = unique_views+1, last_updated_at=NOW();";
                 Mage::getSingleton('unityreports/utils')->getDb()->query($query);
                 $_SESSION[$prodKey] = 1;
 
@@ -88,8 +88,8 @@ class Intelivemetrics_Unityreports_Model_Observer {
         try {
             $product = $observer->getEvent()->getProduct();
             $table = Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/product_counters');
-            $query = "INSERT INTO $table (product_id,addtocarts) VALUES ({$product->getEntityId()},1)
-                        ON DUPLICATE KEY UPDATE addtocarts = addtocarts+1;";
+            $query = "INSERT INTO $table (product_id,addtocarts,last_updated_at) VALUES ({$product->getEntityId()},1,NOW())
+                        ON DUPLICATE KEY UPDATE addtocarts = addtocarts+1,last_updated_at=NOW();";
             Mage::getSingleton('unityreports/utils')->getDb()->query($query);
             //track customer action
             $customer = Mage::getModel('unityreports/customer');

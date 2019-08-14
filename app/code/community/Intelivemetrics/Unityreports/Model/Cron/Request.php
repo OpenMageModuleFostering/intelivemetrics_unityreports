@@ -16,7 +16,10 @@ class Intelivemetrics_Unityreports_Model_Cron_Request extends Intelivemetrics_Un
     //action code codes
     const ACTION_RESET_ALL = "reset_all";
     const ACTION_RESET_PRODUCTS = "reset_products";
+    const ACTION_RESET_PRODUCT_COUNTERS = "reset_product_counters";
     const ACTION_RESET_ORDERS = "reset_orders";
+    const ACTION_RESET_INVOICES = "reset_invoices";
+    const ACTION_RESET_CREDITMEMOS = "reset_creditmemos";
     const ACTION_RESET_CUSTOMERS = "reset_customers";
     const ACTION_RESET_ABCARTS = "reset_abcarts";
     const ACTION_STOP_SYNC = "stop_sync";
@@ -35,7 +38,10 @@ class Intelivemetrics_Unityreports_Model_Cron_Request extends Intelivemetrics_Un
     protected $_actions = array(
         self::ACTION_RESET_ALL,
         self::ACTION_RESET_PRODUCTS,
+        self::ACTION_RESET_PRODUCT_COUNTERS,
         self::ACTION_RESET_ORDERS,
+        self::ACTION_RESET_INVOICES,
+        self::ACTION_RESET_CREDITMEMOS,
         self::ACTION_RESET_CUSTOMERS,
         self::ACTION_RESET_ABCARTS,
         self::ACTION_STOP_SYNC,
@@ -88,8 +94,17 @@ class Intelivemetrics_Unityreports_Model_Cron_Request extends Intelivemetrics_Un
             case self::ACTION_RESET_PRODUCTS:
                 $result = Mage::getModel('unityreports/request_resetProducts')->execute();
                 break;
+            case self::ACTION_RESET_PRODUCT_COUNTERS:
+                $result = Mage::getModel('unityreports/request_resetProductCounters')->execute();
+                break;
             case self::ACTION_RESET_ORDERS:
                 $result = Mage::getModel('unityreports/request_resetOrders')->execute();
+                break;
+            case self::ACTION_RESET_INVOICES:
+                $result = Mage::getModel('unityreports/request_resetInvoices')->execute();
+                break;
+            case self::ACTION_RESET_CREDITMEMOS:
+                $result = Mage::getModel('unityreports/request_resetCreditmemos')->execute();
                 break;
             case self::ACTION_RESET_CUSTOMERS:
                 $result = Mage::getModel('unityreports/request_resetCustomers')->execute();

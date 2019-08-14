@@ -10,7 +10,7 @@
  */
 
 
-class Intelivemetrics_Unityreports_Model_Request_ResetProducts extends Intelivemetrics_Unityreports_Model_Request_Base implements Intelivemetrics_Unityreports_Model_Request_Interface {
+class Intelivemetrics_Unityreports_Model_Request_ResetProductCounters extends Intelivemetrics_Unityreports_Model_Request_Base implements Intelivemetrics_Unityreports_Model_Request_Interface {
 
     public function execute($settings=array()) {
         Intelivemetrics_Unityreports_Model_Utils::log(__METHOD__);
@@ -24,7 +24,7 @@ class Intelivemetrics_Unityreports_Model_Request_ResetProducts extends Intelivem
 
         //reset
         $tables = array(
-            Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/products'),
+            Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/product_counters'),
         );
         $db = Mage::getSingleton('unityreports/utils')->getDb();
         foreach ($tables as $table) {

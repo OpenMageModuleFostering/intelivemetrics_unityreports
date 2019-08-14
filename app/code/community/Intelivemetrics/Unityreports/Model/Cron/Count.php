@@ -47,6 +47,12 @@ class Intelivemetrics_Unityreports_Model_Cron_Count extends Intelivemetrics_Unit
                 'license' => $helper->getLicenseKey()
                     )
             );
+            $helper->debug('Ok - sent '.count($data['products']['data']).' counters');
+            
+            //update last_sent_at
+            $prodCountersTbl = Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/product_counters');
+            $query = "UPDATE $prodCountersTbl SET last_sent_at=NOW() WHERE last_updated_at>=last_sent_at OR last_sent_at IS NULL";
+            Mage::getSingleton('unityreports/utils')->getDb()->query($query);
 
             return true;
         } catch (Exception $e) {
@@ -65,7 +71,7 @@ class Intelivemetrics_Unityreports_Model_Cron_Count extends Intelivemetrics_Unit
         try {
             //get product counters
             $prodCountersTbl = Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/product_counters');
-            $query = "SELECT *FROM $prodCountersTbl";
+            $query = "SELECT *FROM $prodCountersTbl WHERE last_updated_at>=last_sent_at OR last_sent_at IS NULL";
             $res = Mage::getSingleton('unityreports/utils')->getDb()->query($query);
             $i = 0;
             $data = null;
