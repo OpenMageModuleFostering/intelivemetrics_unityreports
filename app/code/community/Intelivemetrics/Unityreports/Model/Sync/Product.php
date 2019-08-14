@@ -84,6 +84,7 @@ class Intelivemetrics_Unityreports_Model_Sync_Product extends Intelivemetrics_Un
             //filter already sent
             $table = Intelivemetrics_Unityreports_Model_Utils::getTableName('unityreports/products');
             $collection->getSelect()
+                    ->where("e.sku IS NOT NULL")
                     ->where("e.entity_id NOT IN (SELECT product_id FROM $table WHERE synced=1 OR sents>={$this->getMaxSents()} OR TIMESTAMPDIFF(MINUTE,last_sent_at,'{$now}')<60)")
                     ->limit($limit)
             ;

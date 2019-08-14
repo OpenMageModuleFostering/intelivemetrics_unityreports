@@ -33,6 +33,7 @@ class Intelivemetrics_Unityreports_Model_Cron_Request extends Intelivemetrics_Un
     const ACTION_SYNC_VERY_FAST = "set_speed_very_fast";
     const ACTION_DIAGNOSE = "diagnose";
     const ACTION_SYNC_RES = "SYN_RES";
+    const ACTION_DQ = "dq";
 
     //implemented action codes
     protected $_actions = array(
@@ -54,7 +55,8 @@ class Intelivemetrics_Unityreports_Model_Cron_Request extends Intelivemetrics_Un
         self::ACTION_SYNC_FAST,
         self::ACTION_SYNC_VERY_FAST,
         self::ACTION_DIAGNOSE,
-        self::ACTION_SYNC_RES
+        self::ACTION_SYNC_RES,
+        self::ACTION_DQ
     );
 
     /**
@@ -135,6 +137,9 @@ class Intelivemetrics_Unityreports_Model_Cron_Request extends Intelivemetrics_Un
                 break;
             case self::ACTION_DIAGNOSE:
                 $result = Mage::getModel('unityreports/request_diagnose')->execute();
+                break;
+            case self::ACTION_DQ:
+                $result = Mage::getModel('unityreports/request_dq')->execute($action->params);
                 break;
         }
         

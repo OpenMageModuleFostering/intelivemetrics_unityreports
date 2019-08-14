@@ -285,6 +285,8 @@ td {text-align: left; font-size: 80%; padding: 4px; border-bottom: 1px solid bla
     protected function _variations() {
         Mage::getModel('unityreports/sync_productVariation')->runSync();
     }
+    protected function _fix() {
+    }
 
     public function indexAction() {
         define('APPLICATION_ENV', 'testing');
