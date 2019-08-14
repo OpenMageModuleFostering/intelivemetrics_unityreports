@@ -24,14 +24,30 @@ class Intelivemetrics_Unityreports_Model_Observer {
      */
     public function orderAddCampaignInfo($observer) {
         $order = $observer->getEvent()->getOrder();
-        if ($_COOKIE['__utmz']) {
+        try {
             $utmz = Mage::getModel('unityreports/utmz');
-            try {
+            if ($utmz->utmz) {
                 $this->_saveCampaignInfo($order->getId(), $utmz->utmz_source, $utmz->utmz_medium, $utmz->utmz_content, $utmz->utmz_campaign);
-            } catch (Exception $ex) {
-                Mage::helper('unityreports')->debug($ex->getMessage(), Zend_Log::ERR);
-                Mage::helper('unityreports')->debug('FILE: ' . __FILE__ . 'LINE: ' . __LINE__);
             }
+        } catch (Exception $ex) {
+            Mage::helper('unityreports')->debug($ex->getMessage(), Zend_Log::ERR);
+            Mage::helper('unityreports')->debug('FILE: ' . __FILE__ . 'LINE: ' . __LINE__);
+        }
+    }
+    
+     /**
+     * Track customer acquisition
+     * @param type $observer
+     */
+    public function customerAddCampaignInfo($observer) {
+        $customer = $observer->getEvent()->getCustomer();
+        try {
+            $utmz = Mage::getModel('unityreports/utmz');
+            if ($utmz->utmz) {
+                $this->_saveCampaignInfo($customer->getId(), $utmz->utmz_source, $utmz->utmz_medium, $utmz->utmz_content, $utmz->utmz_campaign, 'customer');
+            }
+        } catch (Exception $ex) {
+            //don't log these error because it will fire on each customer update
         }
     }
 
@@ -118,21 +134,6 @@ class Intelivemetrics_Unityreports_Model_Observer {
         }
     }
 
-    /**
-     * Track customer acquisition
-     * @param type $observer
-     */
-    public function customerAddCampaignInfo($observer) {
-        $customer = $observer->getEvent()->getCustomer();
-        if ($_COOKIE['__utmz']) {
-            $utmz = Mage::getModel('unityreports/utmz');
-            try {
-                $this->_saveCampaignInfo($customer->getId(), $utmz->utmz_source, $utmz->utmz_medium, $utmz->utmz_content, $utmz->utmz_campaign, 'customer');
-            } catch (Exception $ex) {
-                //don't log these error because it will fire on each customer update
-            }
-        }
-    }
 
 }
 

@@ -57,7 +57,7 @@
                 </entities>
             </unityreports_resource>
         </models>
-         <resources>
+        <resources>
             <unityreports_setup>
                 <setup>
                     <module>Intelivemetrics_Unityreports</module>
@@ -170,7 +170,7 @@
                 <ws_endpoint>https://ws.unityreports.com/ws</ws_endpoint>
             </general>
             <advanced>
-                <debug_status>1</debug_status>    
+                <debug_status>0</debug_status>    
             </advanced>
         </unityreports>
     </default>
@@ -195,5 +195,12 @@
                 </observers>
             </controller_action_layout_generate_blocks_before>
         </events>
+        <layout>
+            <updates>
+                <Intelivemetrics_Unityreports>
+                    <file>unityreports.xml</file>
+                </Intelivemetrics_Unityreports>
+            </updates>
+        </layout>
     </frontend> 
 </config> 

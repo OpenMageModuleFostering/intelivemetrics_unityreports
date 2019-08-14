@@ -32,6 +32,10 @@ class Intelivemetrics_Unityreports_Model_Utmz {
         if (isset($_COOKIE['__utmz'])) {
             $this->utmz = $_COOKIE['__utmz'];
             $this->_parse_utmz();
+        } elseif (isset($_COOKIE['__utmza'])) {
+            //this is set by the utmz-aternative.js script
+            $this->utmz = $_COOKIE['__utmza'];
+            $this->_parse_utmza();
         } else
             return false;
     }
@@ -74,6 +78,33 @@ class Intelivemetrics_Unityreports_Model_Utmz {
                     break;
                 case 'utmgclid':
                     $this->utmz_gclid = $value;
+                    break;
+                default:
+                //do nothing
+            }
+        }
+    }
+    
+    private function _parse_utmza() {
+        //break apart second half of cookie
+        $utmzPairs = array();
+        $z = explode('|', $this->utmz);
+        foreach ($z as $value) {
+            $v = explode('=', $value);
+            $utmzPairs[$v[0]] = $v[1];
+        }
+
+        //Variable assignment for second half of cookie
+        foreach ($utmzPairs as $key => $value) {
+            switch ($key) {
+                case 's':
+                    $this->utmz_source = $value;
+                    break;
+                case 'm':
+                    $this->utmz_medium = $value;
+                    break;
+                case 'c':
+                    $this->utmz_campaign = $value;
                     break;
                 default:
                 //do nothing

@@ -11,12 +11,12 @@
 class Intelivemetrics_Unityreports_Helper_Data extends Mage_Core_Helper_Abstract {
 
     protected $_loggers = null;
-    
+
     /**
      * Check module is correctly setup and sync is activated
      * @return boolean
      */
-    public function appIsOk($requireActiveSync=true){
+    public function appIsOk($requireActiveSync = true) {
         //check license has been setup
         if (!$this->getLicenseKey()) {
             $this->debug('License Key hasn\'t been setup.');
@@ -87,14 +87,14 @@ class Intelivemetrics_Unityreports_Helper_Data extends Mage_Core_Helper_Abstract
 
         if (defined('APPLICATION_ENV') && APPLICATION_ENV == 'testing') {
             //if on testing, don't log errors throw exception
-            if($level<Zend_Log::WARN)
+            if ($level < Zend_Log::WARN)
                 throw new Exception($message);
             else
-                print('NOTICE('.$level.'): '.$message."\n");
-        }else{
+                print('NOTICE(' . $level . '): ' . $message . "\n");
+        }else {
             //if not on testing don't log debug msg 
-            if($level>Zend_Log::INFO){
-                return ;
+            if ($level > Zend_Log::INFO) {
+                return;
             }
         }
 
@@ -111,32 +111,33 @@ class Intelivemetrics_Unityreports_Helper_Data extends Mage_Core_Helper_Abstract
      * @return bool 
      */
     public function isDebug() {
-        return (Mage::getStoreConfig('unityreports/advanced/debug_status') > 0) ? true : false;
+        $testing = (defined('APPLICATION_ENV') && APPLICATION_ENV == 'testing' ? true : false);
+        $debug = (Mage::getStoreConfig('unityreports/advanced/debug_status') > 0 ? true : false);
+        return ($debug || $testing);
     }
-    
+
     /**
      * Returns true if syncing is active (status select is ON)
      * @return bool
      */
-    public function isActive(){
+    public function isActive() {
         return (Mage::getStoreConfig(Intelivemetrics_Unityreports_Model_Config::XML_GENERAL_STATUS) === '1');
     }
 
-    
     public function getLicenseKey() {
         return Mage::getStoreConfig('unityreports/general/license_serial_number');
     }
-    
+
     public function getApiKey() {
         return Mage::getStoreConfig('unityreports/general/api_key');
     }
-    
+
     public function getApiSecret() {
         return Mage::getStoreConfig('unityreports/general/api_secret');
     }
-    
+
     public function getEndpointUrl() {
-        return  Mage::getStoreConfig('unityreports/general/ws_endpoint');
+        return Mage::getStoreConfig('unityreports/general/ws_endpoint');
     }
 
     /**
@@ -200,10 +201,10 @@ class Intelivemetrics_Unityreports_Helper_Data extends Mage_Core_Helper_Abstract
      * @param array $condition = array('key'=>'active','val'=>'1')
      * @return type
      */
-    public function getTableCount($tableName, $condition=array()) {
+    public function getTableCount($tableName, $condition = array()) {
         $table = Mage::getSingleton('core/resource')->getTableName($tableName);
         $sql = "select count(*) ncount from $table";
-        if( (isset($condition['key']) && !empty($condition['key'])) && (isset($condition['val']) && !empty($condition['val'])) ){
+        if ((isset($condition['key']) && !empty($condition['key'])) && (isset($condition['val']) && !empty($condition['val']))) {
             $sql .= " WHERE {$condition['key']} = {$condition['val']}";
         }
         $connection = Mage::getSingleton('core/resource')->getConnection('core_read');
