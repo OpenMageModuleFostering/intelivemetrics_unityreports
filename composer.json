@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Intelivemetrics_Unityreports",
+    "name": "OpenMageModuleFostering\/Intelivemetrics_Unityreports",
     "type": "magento-module",
     "license": "APACHE",
     "homepage": "",
     "description": "Powerful Analytics For Magento",
     "authors": [
-    {
-        "name": "Eduard G. Dumitrescu",
-        "email": "eddie.dumitrescu@gmail.com"
-    }
-],
+        {
+            "name": "Eduard G. Dumitrescu",
+            "email": "eddie.dumitrescu@gmail.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
